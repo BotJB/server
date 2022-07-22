@@ -1,3 +1,5 @@
+
+//This component made 
 class EmployeeSearch extends React.Component {
     render() {            
         return (
@@ -5,7 +7,7 @@ class EmployeeSearch extends React.Component {
         )
     }
 }
-
+//This component made
 const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 function jsonDateReviver(key, value) {
     if (dateRegex.test(value)) return new Date(value);
@@ -36,7 +38,7 @@ async function graphQLFetch(query, variables = {}) {
         alert(`Error in sending data to server: ${e.message}`);
     }
 }
-
+//done in components
 class EmployeeRow extends React.Component {
     render() {    
         const employee=this.props.employee;
@@ -169,7 +171,7 @@ class EmployeeDirectory extends React.Component {
 
         const result = EmployeeData('/graphql', query)
             .then(result =>{                    
-                console.log(result.data.employeeDirectory);
+                console.log(result.data);
                 this.setState({ employees: result.data.employeeDirectory });
                 return result.data.employeeDirectory;                   
         })

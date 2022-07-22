@@ -1,122 +1,53 @@
 const express=require('express')
 const { ApolloServer, UserInputError } = require('apollo-server-express');
-const { GraphQLScalarType, Kind } = require('graphql');
+const dateScalar=require('./graphqlDate')
 require('./models/db')
+const fs = require('fs');
 const Employee = require('./models/Employees');
 let aboutMessage = "Welcome to GraphQL";
-const initialemployee = [
-    {firstname:"heena",lastname:"vinayak",age:28,dateofjoin:new Date('25-08-2021'),title:"Director",department:"IT",employeetype:"Full Time",curentstatus:1}
-];
-
-
-
-const dateScalar = new GraphQLScalarType({
-    name: 'Date',
-    description: 'Date custom scalar type',
-    serialize(value) {
-        return value.toISOString(); // Convert outgoing Date to integer for JSON
-    },
-    parseValue(value) {
-        //return new Date(value);
-        const dateValue = new Date(value);
-        return isNaN(dateValue) ? undefined : dateValue;
-    },
-    parseLiteral(ast) { 
-        if (ast.kind == Kind.INT) {
-            const value = new Date(ast.value);
-            return isNaN(value) ? undefined : value;
-            //return new Date(parseInt(ast.value, 10));
-        } else if(ast.kind == Kind.STRING) {
-            const value = new Date(ast.value);
-            return isNaN(value) ? undefined : value;
-            //return new Date(ast.value)
-        }
-        return null;
-    }
-})
-
-const typeDefs =`
-scalar Date 
-
-enum titleType {
-    Employee
-    Manager 
-    Director
-    VP
-}
-
-enum departmentType {
-    IT 
-    Marketing
-    HR
-    Engineering
-}
-
-enum employeetypeType {
-    FullTime
-    PartTime
-    Contract
-    Seasonal
-}
-
-input EmployeeInputs {
-    title:String
-    firstname:String!
-    lastname:String!
-    age:Int!
-    dateofjoin:Date!
-    department:String
-    employeetype:String
-    curentstatus:Int
-    
-}
-
-
-type Employee {
-  
-    firstname:String!
-    lastname:String!
-    age:Int!
-    dateofjoin:Date!
-    title:titleType!
-    department:departmentType
-    employeetype:employeetypeType!
-    curentstatus:Int
-},
-
-type Query {
-    about: String!,
-    employeeDirectory: [Employee!]!
-}
-type Mutation {
-    setAboutMessage(message: String!): String
-    employeeCreate(employee: EmployeeInputs!): Employee!
-}`;
 
 const resolvers = {
     Date: dateScalar,
     Query: {
         about: () => aboutMessage,
-        employeeDirectory:async()=>{
-            const employee=await Employee.find();
+        employeeDirectory:async(parent,args,context,info)=>{
+            console.log(args.employeetype)
+            if(args.employeetype){
+                const employee=await Employee.find({employeetype:args.employeetype})
+                return employee;
+            }
+            else{
+                      const employee=await Employee.find();
     return employee
+            }
+      
+    
         }
     },
     Mutation: {
-        setAboutMessage,
         employeeCreate:async(parent,args,context,info)=>{
          console.log(args.employee)
             const {title,firstname,lastname,age,dateofjoin,department,employeetype,currentstatus}=args.employee;
             const employee=new Employee({title,firstname,lastname,age,dateofjoin,department,employeetype});
            await employee.save();
             return employee;
-        }
+        },
+        SingleEmployee,
+        updateEmployee
+        
     }
 };
+async function SingleEmployee(parent,args,context,info){
+    console.log(args)
+    const SingleEmployee=await Employee.findById(args)
+    return SingleEmployee;
+}
 
+//function to update the employee
+async function updateEmployee(parent,args,context,info){
+    console.log(args)
 
- 
-
+}
 
 
 function validate(employee) {
@@ -139,7 +70,7 @@ function setAboutMessage(_, {message}){
 }
 
 const server = new ApolloServer({
-    typeDefs,
+    typeDefs: fs.readFileSync('schema_graphql', 'utf8'),
     resolvers,
     formatError: error => {
         console.log(error);
@@ -158,6 +89,6 @@ server.start().then(() => {
     });
 })
 
-app.listen(4000, function(){
-    console.log('App started at 4000');
+app.listen(5000, function(){
+    console.log('App started at 5000');
 })

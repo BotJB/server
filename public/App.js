@@ -180,7 +180,7 @@ class EmployeeDirectory extends React.Component {
     }
 
     const result = EmployeeData('/graphql', query).then(result => {
-      console.log(result.data.employeeDirectory);
+      console.log(result.data);
       this.setState({
         employees: result.data.employeeDirectory
       });

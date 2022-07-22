@@ -1,0 +1,15 @@
+div{
+   
+    text-align: center;
+    display: flex;
+}
+
+root{
+    margin-top: 200px;
+    text-align: center;
+}
+
+th{
+    text-align: center;
+    margin-left: 100px;
+}

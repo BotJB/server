@@ -1,0 +1,63 @@
+enum titleType {
+    Employee
+    Manager 
+    Director
+    VP
+}
+
+enum departmentType {
+    IT 
+    Marketing
+    HR
+    Engineering
+}
+scalar Date 
+
+enum employeetypeType {
+    FullTime
+    PartTime
+    Contract
+    Seasonal
+}
+
+input EmployeeInputs {
+    _id: String!
+    title:String
+    firstname:String!
+    lastname:String!
+    age:Int!
+    dateofjoin:Date!
+    department:String
+    employeetype:String
+    curentstatus:Int
+    
+}
+
+
+type Employee {
+    id:ID!
+    firstname:String!
+    lastname:String!
+    age:Int!
+    dateofjoin:Date!
+    title:titleType!
+    department:departmentType
+    employeetype:employeetypeType!
+    curentstatus:Int
+},
+
+type Query {
+    about: String!,
+    employeeDirectory(employeetype:String): [Employee!]!
+}
+input employeeUpdatePayload {
+    id:String
+    department: String!    
+    employeetype: String!
+    title: String!    
+}
+type Mutation {
+    employeeCreate(employee: EmployeeInputs!): Employee!
+    SingleEmployee(_id:String):Employee
+    updateEmployee(employee:employeeUpdatePayload):Employee
+}
