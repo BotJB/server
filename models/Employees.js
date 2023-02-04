@@ -10,7 +10,7 @@ const EmployeeSchema= new Schema(
         title:String,
         department:String,
         employeetype:String,
-        curentstatus:{
+        currentstatus:{
             type:Number,
             default:1
         },

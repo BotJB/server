@@ -21,7 +21,7 @@ enum employeetypeType {
 }
 
 input EmployeeInputs {
-    _id: String!
+    
     title:String
     firstname:String!
     lastname:String!
@@ -29,7 +29,7 @@ input EmployeeInputs {
     dateofjoin:Date!
     department:String
     employeetype:String
-    curentstatus:Int
+    currentstatus:Int
     
 }
 
@@ -43,12 +43,13 @@ type Employee {
     title:titleType!
     department:departmentType
     employeetype:employeetypeType!
-    curentstatus:Int
+    currentstatus:Int
 },
 
 type Query {
     about: String!,
-    employeeDirectory(employeetype:String): [Employee!]!
+    employeeDirectory(employeetype:String): [Employee!]!,
+    employeeRetire:[Employee]
 }
 input employeeUpdatePayload {
     id:String
@@ -60,4 +61,5 @@ type Mutation {
     employeeCreate(employee: EmployeeInputs!): Employee!
     SingleEmployee(_id:String):Employee
     updateEmployee(employee:employeeUpdatePayload):Employee
+    deleteEmployee(_id:String):String
 }

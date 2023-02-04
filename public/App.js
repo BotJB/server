@@ -49,11 +49,8 @@ async function graphQLFetch(query, variables = {}) {
 class EmployeeRow extends React.Component {
   render() {
     const employee = this.props.employee;
-    const rowStyle = {
-      border: "1px solid black",
-      padding: 2
-    };
-    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, employee.firstname), /*#__PURE__*/React.createElement("td", null, employee.lastname), /*#__PURE__*/React.createElement("td", null, employee.age), /*#__PURE__*/React.createElement("td", null, employee.dateofjoin), /*#__PURE__*/React.createElement("td", null, employee.title), /*#__PURE__*/React.createElement("td", null, employee.department), /*#__PURE__*/React.createElement("td", null, employee.employeetype), /*#__PURE__*/React.createElement("td", null, employee.curentstatus));
+  
+    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, employee.firstname), /*#__PURE__*/React.createElement("td", null, employee.lastname), /*#__PURE__*/React.createElement("td", null, employee.age), /*#__PURE__*/React.createElement("td", null, employee.dateofjoin), /*#__PURE__*/React.createElement("td", null, employee.title), /*#__PURE__*/React.createElement("td", null, employee.department), /*#__PURE__*/React.createElement("td", null, employee.employeetype), /*#__PURE__*/React.createElement("td", null, employee.currentstatus));
   }
 
 }
@@ -88,7 +85,7 @@ class EmployeeCreate extends React.Component {
       title: form.title.value,
       department: form.department.value,
       employeetype: form.employeetype.value,
-      curentstatus: 1
+      currentstatus: 1
     };
     this.props.create(employee);
     form.firstname.value = "";
@@ -162,7 +159,7 @@ class EmployeeDirectory extends React.Component {
              title
              department
              employeetype
-             curentstatus
+             currentstatus
          }
        }`;
 
@@ -199,7 +196,7 @@ class EmployeeDirectory extends React.Component {
                     title
                     department
                     employeetype
-                    curentstatus
+                    currentstatus
                 } 
         }`;
     const data = await graphQLFetch(query, {

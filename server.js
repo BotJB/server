@@ -4,7 +4,12 @@ const dateScalar=require('./graphqlDate')
 require('./models/db')
 const fs = require('fs');
 const Employee = require('./models/Employees');
+const { findById } = require('./models/Employees');
+const path = require('path');
 let aboutMessage = "Welcome to GraphQL";
+
+require('dotenv').config()
+console.log(process.env.MONGO_URI)
 
 const resolvers = {
     Date: dateScalar,
@@ -22,7 +27,8 @@ const resolvers = {
             }
       
     
-        }
+        },
+        employeeRetire
     },
     Mutation: {
         employeeCreate:async(parent,args,context,info)=>{
@@ -33,7 +39,8 @@ const resolvers = {
             return employee;
         },
         SingleEmployee,
-        updateEmployee
+        updateEmployee,
+        deleteEmployee
         
     }
 };
@@ -44,8 +51,37 @@ async function SingleEmployee(parent,args,context,info){
 }
 
 //function to update the employee
-async function updateEmployee(parent,args,context,info){
-    console.log(args)
+async function updateEmployee(parent,{employee},context,info){
+    console.log("It is in update function")
+    console.log(employee)
+    await Employee.findOneAndUpdate({_id:employee.id},{
+        title:employee.title,
+        department:employee.department,
+        employeetype:employee.employeetype
+    }).then(emp=>{
+        return true
+    }).then(error=>{
+        console.log(error)
+        return error;
+    })
+
+}
+
+//function to delete the user
+async function deleteEmployee(parent,args,context,info){
+console.log(args)
+const employee=await Employee.findById(args._id);
+if(employee.currentstatus==1){
+    console.log('This employee is working rn');
+    return "This employee is currently working";
+  
+}
+else{
+    await Employee.findByIdAndDelete(args._id).then(result=>true)
+.then(err=>{false})
+return "employee Deleted"
+}
+
 
 }
 
@@ -67,6 +103,12 @@ function validate(employee) {
 
 function setAboutMessage(_, {message}){
     return aboutMessage = message;
+}
+
+async function employeeRetire(){
+    const employee=await Employee.find({age: {$gte: 64}});
+    console.log(employee)
+    return employee
 }
 
 const server = new ApolloServer({
