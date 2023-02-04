@@ -131,6 +131,6 @@ server.start().then(() => {
     });
 })
 
-app.listen(5000, function(){
-    console.log('App started at 5000');
+app.listen(process.env.PORT || 5000, function(){
+    console.log(`App started at $${process.env.PORT}`);
 })
